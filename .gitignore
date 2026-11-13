@@ -7,3 +7,13 @@ dist/
 *.spec
 uploads/
 outputs/
+
+.venv/
+__pycache__/
+*.pyc
+.env
+uploads/
+outputs/
+build/
+dist/
+*.spec

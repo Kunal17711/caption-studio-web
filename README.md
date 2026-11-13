@@ -1,24 +1,22 @@
-# Caption Studio Desktop 2.1 — Free, Open Source
+# Caption Studio Web 2.0
 
-A Windows desktop **app** built using Python + FastAPI + pywebview (Edge WebView2). The editing UI runs inside its own desktop window. AI subtitles are generated locally with faster-whisper. **No Render deployment and no paid API required.**
+Free, local-first video captions with browser UI, AI transcription (Whisper), editable timed captions, SRT download, and FFmpeg burn-in MP4 export. No paid API keys or account needed.
 
-## Run locally on Windows
+## Windows setup
+1. Extract ZIP to a fresh folder.
+2. Requires **Python 3.12**. Double-click `START_WINDOWS.bat`.
+3. Open `http://127.0.0.1:8000` (the script tries to open it automatically).
+4. Import a video, generate captions, edit styling, export SRT or MP4.
 
-1. Install Python **3.12** if necessary. On Windows 11 ensure Edge WebView2 Runtime is installed (normally bundled).
-2. Extract the complete ZIP. Double-click **START_DESKTOP_WINDOWS.bat**.
-3. A standalone Caption Studio window opens; it only uses localhost and not the public Render site.
-4. Import a video; generate and edit captions; export SRT or rendered MP4.
+The first run downloads the open Whisper model. Subsequent transcriptions use the cache. For performance prefer small video files and `tiny` model.
 
-The first model use downloads Whisper weights once from Hugging Face and caches them locally; running fully offline requires that model to have been downloaded. SRT doesn't alter the original video. Burning captions into MP4 re-encodes video and is not mathematically lossless.
+## Deploy to Render (optional)
+1. Push contents of this directory to a *new* GitHub repository.
+2. Render → New → Blueprint, connect the repo, select `render.yaml` and deploy.
+3. Render free hosting is a best-effort hobby tier; cold starts, upload timeouts, memory limitations, monthly limits and ephemeral storage apply. For real public AI usage, budget for compute/storage and implement authentication/quotas. Do not use as an unrestricted production service.
 
-## Make an EXE
+**Privacy:** When run locally, the video stays on your machine. When deployed to Render, videos are uploaded to that server, stored temporarily and deleted after two hours when a future upload triggers cleanup. Files are *not* immediately removed when browser closes. No authentication is included in this MVP: generated random job IDs serve as access tokens. Do not upload confidential videos to a public deployment.
 
-Double-click **BUILD_EXE_WINDOWS.bat** after extracting the source. Build may take several minutes and requires disk space for native AI libraries. After build the executable is `dist\CaptionStudio\CaptionStudio.exe`. **Distribute the whole `dist\CaptionStudio` folder** (zip it for GitHub Releases), not only the `.exe`. This is an unsigned community build and may show Windows SmartScreen warnings. PyInstaller Windows builds must be made on Windows; this source package does not include a precompiled EXE.
+**Quality:** SRT export preserves your original video file. Burned-in captions require lossy re-encoding at CRF 17, preserving source frame geometry by default.
 
-## Push to your existing GitHub repository
-
-Copy `desktop.py`, `requirements-desktop.txt`, `START_DESKTOP_WINDOWS.bat`, and `BUILD_EXE_WINDOWS.bat` into your already cloned `caption-studio-web` repository; the existing backend and `static` folder are reused. Commit and push. Keep the web Render deployment only if you still want a hosted demo; it is NOT needed for desktop use.
-
-## Privacy and limitations
-
-Local video processing happens on your computer. Video files/job results are temporarily stored in your system temporary folder and expire opportunistically after two hours (or may disappear on reboot). Caption projects are not persisted across app restarts. The editor UI is an embedded webview, not a Tkinter native UI. Localhost is bound to 127.0.0.1 and a random port. EXE builds and full AI model downloading have not been tested on a physical Windows machine in this environment.
+**Limitations:** No accounts, payments, long-term project storage, real-time collaborative editing, or automated abuse prevention. This is a functional free MVP, not a production-ready SaaS. Concurrent processing is serialized in-process. Render services can restart and wipe temporary files. Font size and placement during MP4 export use ASS's virtual 1080×1920 canvas; best suited to portrait video.
