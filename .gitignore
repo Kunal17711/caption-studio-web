@@ -17,3 +17,13 @@ outputs/
 build/
 dist/
 *.spec
+
+.venv/
+__pycache__/
+*.pyc
+.env
+uploads/
+outputs/
+build/
+dist/
+*.spec
